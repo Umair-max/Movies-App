@@ -1,6 +1,7 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 
 import ChatScreen from './app/screens/ChatScreen';
 import GenreScreen from './app/screens/GenreScreen';
@@ -11,12 +12,28 @@ import SearchScreen from './app/screens/SearchScreen';
 import SignupScreen from './app/screens/SignupScreen';
 import AuthNavigator from './app/navigation/AuthNavigator';
 import AppNavigator from './app/navigation/AppNavigator';
+import AuthsContext from './app/auths/AuthsContext';
 
 export default function App(props) {
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  const checkUser = () => {
+    if (auth().currentUser !== null && auth().currentUser !== undefined) {
+      console.log('user not null >>>  ', auth().currentUser);
+      // console.log('l o g ', auth().currentUser);
+      setUser(auth().currentUser);
+    }
+  };
+
   return (
-    <NavigationContainer>
-      <AppNavigator />
-    </NavigationContainer>
+    <AuthsContext.Provider value={{user, setUser}}>
+      <NavigationContainer>
+        {user !== null ? <AppNavigator /> : <AuthNavigator />}
+      </NavigationContainer>
+    </AuthsContext.Provider>
   );
 }
 

@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {
   View,
@@ -8,6 +9,7 @@ import {
   ScrollView,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import Icon from '../components/Icon';
 import SmallButton from '../components/SmallButton';
 import colors from '../config/colors';
 
@@ -33,17 +35,30 @@ const data = [
 ];
 
 function HomeScreen() {
+  const navigation = useNavigation();
   return (
     <LinearGradient colors={colors.background} style={styles.linearGradient}>
       <SafeAreaView>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={styles.primaryText}>Home</Text>
-
+          <View
+            style={{
+              flexDirection: 'row',
+              paddingHorizontal: 40,
+            }}>
+            <View style={{flex: 1.7}}></View>
+            <Text style={styles.primaryText}>Home</Text>
+            <View style={{flex: 1}}></View>
+            <Icon
+              iconColor={colors.white}
+              iconSource={require('../assets/user.png')}
+              onPress={() => navigation.navigate('Profile')}
+            />
+          </View>
           <FlatList
             showsHorizontalScrollIndicator={false}
             horizontal
             data={data}
-            renderItem={({item}) => <SmallButton title={item.key} />}
+            renderItem={({item, index}) => <SmallButton title={item.key} />}
           />
           {data.map(item => (
             <>
@@ -76,7 +91,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.white,
     paddingBottom: 15,
-    alignSelf: 'center',
   },
   movieImageContainer: {
     marginLeft: 15,

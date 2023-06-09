@@ -11,8 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1E571ABF2A31EA18002F7F19 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1E571ABE2A31EA18002F7F19 /* GoogleService-Info.plist */; };
-		1E83DB062A31F26200820DDA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1E83DB052A31F26200820DDA /* GoogleService-Info.plist */; };
+		1E0D225E2A33025100F235D4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1E83DB052A31F26200820DDA /* GoogleService-Info.plist */; };
 		2E1BD11682759829F62B3C6A /* Pods_AwesomeProject2_AwesomeProject2Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE5A8624457038D6F233A6A4 /* Pods_AwesomeProject2_AwesomeProject2Tests.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		D56F9840F20917F67EE8EC2F /* Pods_AwesomeProject2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC252C607FCF4F2B05C61231 /* Pods_AwesomeProject2.framework */; };
@@ -249,10 +248,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1E0D225E2A33025100F235D4 /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				1E83DB062A31F26200820DDA /* GoogleService-Info.plist in Resources */,
-				1E571ABF2A31EA18002F7F19 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

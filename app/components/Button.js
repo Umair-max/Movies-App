@@ -2,9 +2,9 @@ import React from 'react';
 import {View, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native';
 import colors from '../config/colors';
 
-function Button({title = 'title', color = colors.darkBlue}) {
+function Button({title = 'title', color = colors.darkBlue, onPress}) {
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={onPress}>
       <View style={[styles.buttonContainer, {backgroundColor: color}]}>
         <Text style={styles.title}>{title}</Text>
       </View>
