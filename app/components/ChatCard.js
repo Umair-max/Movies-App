@@ -10,7 +10,7 @@ function ChatCard() {
       <View style={{width: '70%'}}>
         <Text style={styles.userName}>User Name</Text>
         <Text style={styles.lastMessage} numberOfLines={1}>
-          sfasfsfsdfgsdfg
+          Faisal Changings Complete
         </Text>
       </View>
       <Text style={styles.time}>11:18 PM</Text>
