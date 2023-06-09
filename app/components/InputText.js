@@ -8,6 +8,7 @@ function InputText({
   textpaddingHorizontal = 15,
   fontSize = 20,
   paddingVertical = 14,
+  ...otherProps
 }) {
   return (
     <View
@@ -16,13 +17,16 @@ function InputText({
         {backgroundColor: backgroundColor, paddingVertical: paddingVertical},
       ]}>
       <TextInput
+        placeholder={placeholder}
+        placeholderTextColor={colors.white}
+        autoCapitalize={'none'}
+        autoCorrect={false}
+        {...otherProps}
         style={{
           paddingHorizontal: textpaddingHorizontal,
           fontSize: fontSize,
           color: colors.white,
-        }}
-        placeholder={placeholder}
-        placeholderTextColor={colors.white}></TextInput>
+        }}></TextInput>
     </View>
   );
 }

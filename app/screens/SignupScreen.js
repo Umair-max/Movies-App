@@ -1,19 +1,58 @@
-import React from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
   ImageBackground,
+  Alert,
 } from 'react-native';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
+import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
+import AuthsContext from '../auths/AuthsContext';
 import Button from '../components/Button';
 import Icon from '../components/Icon';
 import InputText from '../components/InputText';
 import colors from '../config/colors';
+import useAuths from '../auths/useAuths';
 
 function SignupScreen() {
+  const navigation = useNavigation();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [uid, setUid] = useState('');
+  const {user, setUser} = useAuths();
+
+  const handleSignup = () => {
+    auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        Alert.alert('Done', 'your account created');
+        var UserUid = auth().currentUser.uid;
+        handleUserInfo(UserUid);
+        setTimeout(() => {
+          // auth.login(auth().currentUser);
+          setUser(auth().currentUser);
+        }, 3000);
+      })
+      .catch(error => console.log('Signup Faild', error));
+  };
+  const handleUserInfo = uid => {
+    firestore()
+      .collection('Users')
+      .doc(uid)
+      .set({
+        name: name,
+        email: email,
+      })
+      .then(() => console.log('data has sent'));
+  };
+
   return (
     <LinearGradient colors={colors.background} style={styles.linearGradient}>
       <ImageBackground
@@ -23,20 +62,33 @@ function SignupScreen() {
         <SafeAreaView>
           <View style={{paddingTop: 200}}></View>
           <Text style={styles.primaryText}>Signup</Text>
-          <InputText placeholder={'Name'} />
-          <InputText placeholder={'Email'} />
-          <InputText placeholder={'Password'} />
-          <View style={{paddingHorizontal: 30}}>
-            <Button title="Signup" color={colors.transparent} />
-          </View>
-          <View style={styles.bottomContainer}>
-            <Text style={styles.secondaryText}>or continue with</Text>
-            <View style={styles.iconsContainer}>
-              <Icon iconSource={require('../assets/apple.png')} />
-              <Icon iconSource={require('../assets/facebook.png')} />
-              <Icon iconSource={require('../assets/google.png')} />
-            </View>
-            <Text style={styles.primaryText}>Login</Text>
+          <InputText
+            placeholder={'Name'}
+            value={name}
+            onChangeText={text => setName(text)}
+          />
+          <InputText
+            placeholder={'Email'}
+            value={email}
+            onChangeText={text => setEmail(text)}
+          />
+          <InputText
+            placeholder={'Password'}
+            value={password}
+            onChangeText={text => setPassword(text)}
+          />
+          <View style={{paddingHorizontal: 30, alignItems: 'center'}}>
+            <Button
+              title="Signup"
+              color={colors.transparent}
+              onPress={() => handleSignup()}
+            />
+            <TouchableWithoutFeedback
+              onPress={() => navigation.navigate('Login')}>
+              <View style={{paddingTop: 90}}>
+                <Text style={styles.primaryText}>Login?</Text>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
         </SafeAreaView>
       </ImageBackground>
@@ -46,8 +98,7 @@ function SignupScreen() {
 const styles = StyleSheet.create({
   linearGradient: {
     flex: 1,
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingHorizontal: 15,
     borderRadius: 5,
   },
   background: {
@@ -60,7 +111,6 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     color: colors.white,
-    paddingBottom: 15,
   },
   secondaryText: {
     color: colors.white,
