@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TouchableWithoutFeedback,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
@@ -22,17 +23,20 @@ function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {user, setUser} = useAuths();
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const handleLogin = () => {
     auth()
       .signInWithEmailAndPassword(email, password)
-      .then(snapshot => {
-        Alert.alert('Done', 'you logged in');
-        var user = snapshot.user;
-        console.log(user);
+      .then(() => {
+        setIsLoaded(true);
         setUser(auth().currentUser);
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        let errorMessage = error.message;
+        const splittedMessage = errorMessage.split('] ')[1];
+        Alert.alert('Message', splittedMessage);
+      });
   };
   return (
     <LinearGradient colors={colors.background} style={styles.linearGradient}>
@@ -40,56 +44,62 @@ function LoginScreen() {
         source={require('../assets/avatar.png')}
         style={styles.background}
         imageStyle={{opacity: 0.3}}>
-        <SafeAreaView>
-          <View style={styles.overlay}>
-            <View style={{paddingTop: 200}}></View>
-            <Text style={styles.primaryText}>Login</Text>
-            <InputText
-              placeholder={'Email'}
-              value={email}
-              onChangeText={text => setEmail(text)}
-            />
-            <InputText
-              placeholder={'Password'}
-              value={password}
-              onChangeText={text => setPassword(text)}
-            />
-            <View style={{flexDirection: 'row-reverse'}}>
-              <TouchableWithoutFeedback
-                onPress={() => navigation.navigate('Forget')}>
-                <Text style={styles.secondaryText}>Forget password </Text>
-              </TouchableWithoutFeedback>
-            </View>
-            <View style={{paddingHorizontal: 20}}>
-              <Button
-                title="Login"
-                color={colors.transparent}
-                onPress={() => handleLogin()}
+        {isLoaded ? (
+          <View style={styles.indicator}>
+            <ActivityIndicator />
+          </View>
+        ) : (
+          <SafeAreaView>
+            <View style={styles.overlay}>
+              <View style={{paddingTop: 200}}></View>
+              <Text style={styles.primaryText}>Login</Text>
+              <InputText
+                placeholder={'Email'}
+                value={email}
+                onChangeText={text => setEmail(text)}
               />
-            </View>
-            <View style={styles.bottomContainer}>
-              <Text style={styles.secondaryText}>or continue with</Text>
-              <View style={styles.iconsContainer}>
-                <Icon
-                  iconSource={require('../assets/apple.png')}
-                  imageSize={20}
-                />
-                <Icon
-                  iconSource={require('../assets/facebook.png')}
-                  imageSize={20}
-                />
-                <Icon
-                  iconSource={require('../assets/google.png')}
-                  imageSize={20}
+              <InputText
+                placeholder={'Password'}
+                value={password}
+                onChangeText={text => setPassword(text)}
+              />
+              <View style={{flexDirection: 'row-reverse'}}>
+                <TouchableWithoutFeedback
+                  onPress={() => navigation.navigate('Forget')}>
+                  <Text style={styles.secondaryText}>Forget password </Text>
+                </TouchableWithoutFeedback>
+              </View>
+              <View style={{paddingHorizontal: 20}}>
+                <Button
+                  title="Login"
+                  color={colors.transparent}
+                  onPress={() => handleLogin()}
                 />
               </View>
-              <TouchableWithoutFeedback
-                onPress={() => navigation.navigate('Signup')}>
-                <Text style={styles.primaryText}>Sign up?</Text>
-              </TouchableWithoutFeedback>
+              <View style={styles.bottomContainer}>
+                <Text style={styles.secondaryText}>or continue with</Text>
+                <View style={styles.iconsContainer}>
+                  <Icon
+                    iconSource={require('../assets/apple.png')}
+                    imageSize={20}
+                  />
+                  <Icon
+                    iconSource={require('../assets/facebook.png')}
+                    imageSize={20}
+                  />
+                  <Icon
+                    iconSource={require('../assets/google.png')}
+                    imageSize={20}
+                  />
+                </View>
+                <TouchableWithoutFeedback
+                  onPress={() => navigation.navigate('Signup')}>
+                  <Text style={styles.primaryText}>Sign up?</Text>
+                </TouchableWithoutFeedback>
+              </View>
             </View>
-          </View>
-        </SafeAreaView>
+          </SafeAreaView>
+        )}
       </ImageBackground>
     </LinearGradient>
   );
@@ -105,6 +115,11 @@ const styles = StyleSheet.create({
     width: '115%',
     alignSelf: 'center',
     paddingHorizontal: 30,
+  },
+  indicator: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   overlay: {
     zIndex: 1,

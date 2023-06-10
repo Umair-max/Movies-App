@@ -1,20 +1,24 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import colors from '../config/colors';
 import Icon from './Icon';
 
 function ChatCard() {
+  const navigation = useNavigation();
   return (
-    <View style={styles.container}>
-      <Icon iconSize={50} />
-      <View style={{width: '70%'}}>
-        <Text style={styles.userName}>User Name</Text>
-        <Text style={styles.lastMessage} numberOfLines={1}>
-          Faisal Changings Complete
-        </Text>
+    <TouchableWithoutFeedback onPress={() => navigation.navigate('Chat')}>
+      <View style={styles.container}>
+        <Icon iconSize={50} />
+        <View style={{width: '70%'}}>
+          <Text style={styles.userName}>User Name</Text>
+          <Text style={styles.lastMessage} numberOfLines={1}>
+            Faisal Changings Complete
+          </Text>
+        </View>
+        <Text style={styles.time}>11:18 PM</Text>
       </View>
-      <Text style={styles.time}>11:18 PM</Text>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 const styles = StyleSheet.create({
