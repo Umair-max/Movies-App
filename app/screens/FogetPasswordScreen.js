@@ -13,7 +13,6 @@ import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 
 import Button from '../components/Button';
-import Icon from '../components/Icon';
 import InputText from '../components/InputText';
 import colors from '../config/colors';
 
@@ -25,7 +24,11 @@ function ForgetPasswordScreen() {
     auth()
       .sendPasswordResetEmail(email)
       .then(() => Alert.alert('Done', `reset email had sent to ${email}`))
-      .catch(error => console.log(error));
+      .catch(error => {
+        let errorMessage = error.message;
+        const splittedMessage = errorMessage.split('] ')[1];
+        Alert.alert('Message', splittedMessage);
+      });
   };
 
   return (

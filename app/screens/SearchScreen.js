@@ -96,24 +96,33 @@ function SearchScreen() {
               />
             </View>
           </View>
-
-          {data.map(item => (
-            <>
-              <View style={styles.container}>
-                <Text key={item.id} style={styles.primaryText}>
-                  {item.key}
-                </Text>
-                <SmallButton
-                  height={20}
-                  fontSize={12}
-                  fontWeight={'500'}
-                  paddingHorizontal={10}
-                  title="See all"
-                />
-              </View>
-              <View style={styles.movieImageContainer}></View>
-            </>
-          ))}
+          <ScrollView horizontal={true} scrollEnabled={false}>
+            <FlatList
+              scrollEnabled={false}
+              showsVerticalScrollIndicator={false}
+              data={data}
+              renderItem={({item}) => (
+                <>
+                  <View style={styles.titleContainer}>
+                    <Text key={item.id} style={styles.primaryText}>
+                      {item.key}
+                    </Text>
+                    <SmallButton
+                      height={20}
+                      fontSize={12}
+                      fontWeight={'500'}
+                      paddingHorizontal={10}
+                      title="See all"
+                    />
+                  </View>
+                  <View style={styles.imageContainer}>
+                    <View style={styles.movieImage}></View>
+                    <View style={styles.movieImage}></View>
+                  </View>
+                </>
+              )}
+            />
+          </ScrollView>
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
@@ -121,28 +130,29 @@ function SearchScreen() {
 }
 const styles = StyleSheet.create({
   linearGradient: {
-    flex: 1,
     paddingHorizontal: 15,
   },
   primaryText: {
     fontSize: 26,
     fontWeight: '600',
     color: colors.white,
-    paddingBottom: 15,
+    paddingBottom: 10,
     alignSelf: 'center',
   },
-  movieImageContainer: {
+  movieImage: {
     backgroundColor: colors.white,
     height: 130,
     width: 130,
     borderRadius: 10,
-    marginBottom: 30,
+    marginBottom: 25,
     marginRight: 10,
   },
-  container: {
+  titleContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  imageContainer: {
+    flexDirection: 'row',
   },
 });
 export default SearchScreen;

@@ -1,4 +1,5 @@
-import React from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -13,21 +14,24 @@ import Icon from '../components/Icon';
 import colors from '../config/colors';
 
 function ChatScreen() {
+  const navigation = useNavigation();
+  const [visibleIcon, setVisibleIcon] = useState(true);
   return (
     <LinearGradient colors={colors.background} style={styles.linearGradient}>
-      <View style={styles.topContainer}>
+      <LinearGradient colors={colors.topColor} style={styles.topContainer}>
         <SafeAreaView>
           <View style={styles.container}>
             <Icon
               iconSource={require('../assets/arrow.png')}
               iconSize={30}
               backgroundColor="transparent"
+              onPress={() => navigation.navigate('Inbox')}
             />
-            <Icon iconSize={50} />
+            <Icon iconSize={50} iconSource={require('../assets/user.png')} />
             <Text style={styles.userName}>User Name</Text>
           </View>
         </SafeAreaView>
-      </View>
+      </LinearGradient>
       <ScrollView style={{flex: 1}}></ScrollView>
 
       <View style={styles.bottomTab}>
@@ -38,22 +42,34 @@ function ChatScreen() {
             iconSize={40}
           />
           <TextInput
-            placeholder="Type your message"
+            placeholder="Type message"
             placeholderTextColor={colors.dimWhite}
             style={styles.textInput}
+            // onChange={() => setVisibleIcon(false)}
           />
-          <Icon
-            backgroundColor="transparent"
-            iconSource={require('../assets/happy.png')}
-            iconColor={colors.white}
-            iconSize={40}
-          />
-          <Icon
-            backgroundColor="transparent"
-            iconSource={require('../assets/send.png')}
-            iconColor={colors.white}
-            iconSize={40}
-          />
+          <View
+            style={{
+              position: 'absolute',
+              flexDirection: 'row',
+              right: 0,
+              alignSelf: 'center',
+            }}>
+            {visibleIcon ? (
+              <Icon
+                backgroundColor="transparent"
+                iconSource={require('../assets/happy.png')}
+                iconColor={colors.white}
+                iconSize={40}
+              />
+            ) : null}
+
+            <Icon
+              backgroundColor="transparent"
+              iconSource={require('../assets/send.png')}
+              iconColor={colors.white}
+              iconSize={40}
+            />
+          </View>
         </View>
       </View>
     </LinearGradient>
@@ -63,20 +79,16 @@ const styles = StyleSheet.create({
   linearGradient: {
     paddingHorizontal: 15,
     flex: 1,
-    borderRadius: 5,
   },
   topContainer: {
-    height: '15%',
+    paddingBottom: 7,
     width: '110%',
-    backgroundColor: colors.lightBlue,
-    position: 'absolute',
     alignSelf: 'center',
   },
   container: {
     flexDirection: 'row',
-    width: '100%',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingLeft: 15,
   },
   userName: {
     fontSize: 20,
@@ -92,7 +104,6 @@ const styles = StyleSheet.create({
   bottomTab: {
     width: '110%',
     height: 80,
-    // backgroundColor: colors.blue,
     alignSelf: 'center',
     paddingHorizontal: 20,
   },

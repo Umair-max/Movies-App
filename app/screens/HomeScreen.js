@@ -37,17 +37,17 @@ const data = [
 function HomeScreen() {
   const navigation = useNavigation();
   return (
-    <LinearGradient colors={colors.background} style={styles.linearGradient}>
-      <SafeAreaView>
+    <LinearGradient colors={colors.background}>
+      <SafeAreaView style={{height: '100%', width: '100%'}}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
               flexDirection: 'row',
-              paddingHorizontal: 40,
+              paddingHorizontal: 20,
+              justifyContent: 'space-between',
             }}>
-            <View style={{flex: 1.7}}></View>
+            <View style={styles.hidden}></View>
             <Text style={styles.primaryText}>Home</Text>
-            <View style={{flex: 1}}></View>
             <Icon
               iconColor={colors.white}
               iconSource={require('../assets/user.png')}
@@ -58,54 +58,68 @@ function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             horizontal
             data={data}
-            renderItem={({item, index}) => <SmallButton title={item.key} />}
+            renderItem={({item}) => <SmallButton title={item.key} />}
           />
-          {data.map(item => (
-            <>
-              <View style={styles.container}>
-                <Text key={item.id} style={styles.primaryText}>
-                  {item.key}
-                </Text>
-                <SmallButton
-                  height={20}
-                  fontSize={12}
-                  fontWeight={'500'}
-                  paddingHorizontal={10}
-                  title="See all"
-                />
-              </View>
-              <View style={styles.movieImageContainer}></View>
-            </>
-          ))}
+          <ScrollView horizontal={true} scrollEnabled={false}>
+            <FlatList
+              scrollEnabled={false}
+              showsVerticalScrollIndicator={false}
+              data={data}
+              renderItem={({item}) => (
+                <>
+                  <View style={styles.titleContainer}>
+                    <Text key={item.id} style={styles.primaryText}>
+                      {item.key}
+                    </Text>
+                    {/* <View style={{flex: 1}}></View> */}
+                    <SmallButton
+                      height={20}
+                      fontSize={12}
+                      fontWeight={'500'}
+                      paddingHorizontal={10}
+                      title="See all"
+                    />
+                  </View>
+                  <View style={styles.imageContainer}>
+                    <View style={styles.movieImage}></View>
+                    <View style={styles.movieImage}></View>
+                  </View>
+                </>
+              )}
+            />
+          </ScrollView>
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
   );
 }
 const styles = StyleSheet.create({
-  linearGradient: {
-    flex: 1,
-  },
   primaryText: {
     fontSize: 26,
     fontWeight: '600',
     color: colors.white,
-    paddingBottom: 15,
+    marginBottom: 10,
   },
-  movieImageContainer: {
-    marginLeft: 15,
+  movieImage: {
     backgroundColor: colors.white,
     height: 130,
     width: 130,
     borderRadius: 10,
-    marginBottom: 30,
+    marginBottom: 25,
     marginRight: 10,
   },
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  titleContainer: {
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
+    flexDirection: 'row',
+    marginLeft: 15,
+  },
+  imageContainer: {
+    marginLeft: 15,
+    flexDirection: 'row',
+  },
+  hidden: {
+    width: 40,
+    height: 40,
   },
 });
 export default HomeScreen;
