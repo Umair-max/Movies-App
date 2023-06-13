@@ -14,7 +14,7 @@ export default function App(props) {
 
   const checkUser = () => {
     if (auth().currentUser !== null && auth().currentUser !== undefined) {
-      console.log('user not null >>>  ', auth().currentUser);
+      // console.log('user not null >>>  ', auth().currentUser);
       setUser(auth().currentUser);
     }
   };

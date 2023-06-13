@@ -35,8 +35,6 @@ function SignupScreen() {
         var UserUid = auth().currentUser.uid;
         handleUserInfo(UserUid);
         setUser(auth().currentUser);
-        // setTimeout(() => {
-        // }, 3000);
       })
       .catch(error => {
         let errorMessage = error.message;
@@ -44,15 +42,12 @@ function SignupScreen() {
         Alert.alert('Message', splittedMessage);
       });
   };
+
   const handleUserInfo = uid => {
-    firestore()
-      .collection('Users')
-      .doc(uid)
-      .set({
-        name: name,
-        email: email,
-      })
-      .then(() => console.log('data has sent'));
+    firestore().collection('Users').doc(uid).set({
+      name: name,
+      email: email,
+    });
   };
 
   return (

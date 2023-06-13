@@ -41,7 +41,6 @@ function ProfileScreen(props) {
       .signOut()
       .then(() => {
         setUser(null);
-        Alert.alert('Done', 'Signed out');
       })
       .catch(error => {
         console.error(error);

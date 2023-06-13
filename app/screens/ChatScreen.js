@@ -1,21 +1,126 @@
+import React, {useState, useEffect, useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
-  ScrollView,
   TextInput,
+  Alert,
+  FlatList,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from '../components/Icon';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
+import EmojiSelector from 'react-native-emoji-selector';
+import {launchImageLibrary} from 'react-native-image-picker';
 
+import Icon from '../components/Icon';
+import MessageReceiveCard from '../components/MessageReceiveCard';
+import MessageSendCard from '../components/MessageSendCard';
 import colors from '../config/colors';
+import moment from 'moment';
+import ImageCard from '../components/ImageCard';
+import ChatCard from '../components/ChatCard';
 
 function ChatScreen() {
+  const scrollRef = useRef(null);
   const navigation = useNavigation();
-  const [visibleIcon, setVisibleIcon] = useState(true);
+  const uid = auth().currentUser.uid;
+  const [message, setMessage] = useState('');
+  const [time, setTime] = useState('');
+  const [chats, setChats] = useState([]);
+  const [name, setName] = useState('');
+  const [imageUri, setImageUri] = useState(null);
+
+  const [showEmojiTab, setShowEmojiTab] = useState(false);
+
+  useEffect(() => {
+    getUserName();
+    getMessage();
+  }, []);
+
+  const getUserName = () => {
+    firestore()
+      .collection('Users')
+      .doc(uid)
+      .onSnapshot(snap => setName(snap.data().name));
+  };
+
+  const getMessage = () => {
+    firestore()
+      .collection('Message')
+      .orderBy('date', 'asc')
+      .onSnapshot(snap => {
+        const data = snap.docs;
+        const array = [];
+        data.forEach(eachMessage => {
+          const msg = eachMessage.data();
+          array.push(msg);
+        });
+        setChats(array);
+      });
+  };
+  const sendMessage = url => {
+    if (message.trim().length !== 0 || url) {
+      firestore()
+        .collection('Message')
+        .doc()
+        .set({
+          imageUrl: url,
+          message: message,
+          time: moment().format('h:mm a'),
+          uid: uid,
+          name: name,
+          date: Date.now(),
+        });
+    } else {
+      Alert.alert('Alert', 'Message should not be empty');
+    }
+    setMessage('');
+    setImageUri(null);
+  };
+
+  const selectImage = async () => {
+    try {
+      const options = {
+        mediaType: 'photo',
+        quality: 0.1,
+      };
+      const result = await launchImageLibrary(options);
+      if (!result?.didCancel) {
+        result.assets.map(({uri}) => {
+          setImageUri(uri);
+        });
+      }
+    } catch (error) {
+      console.log('select image giving an error an error', error);
+    }
+  };
+
+  const storeImage = () => {
+    const postId = firestore().collection('Users').doc().id;
+    var pathToBe = 'Post Image' + postId;
+    storage()
+      .ref(pathToBe)
+      .putFile(imageUri)
+      .then(() => {
+        storage()
+          .ref(pathToBe)
+          .getDownloadURL()
+          .then(url => {
+            sendMessage(url);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   return (
     <LinearGradient colors={colors.background} style={styles.linearGradient}>
       <LinearGradient colors={colors.topColor} style={styles.topContainer}>
@@ -27,51 +132,111 @@ function ChatScreen() {
               backgroundColor="transparent"
               onPress={() => navigation.navigate('Inbox')}
             />
-            <Icon iconSize={50} iconSource={require('../assets/user.png')} />
-            <Text style={styles.userName}>User Name</Text>
+            <Icon iconSize={50} iconSource={require('../assets/global.png')} />
+            <Text style={styles.userName}>Global Chat</Text>
           </View>
         </SafeAreaView>
       </LinearGradient>
-      <ScrollView style={{flex: 1}}></ScrollView>
-
-      <View style={styles.bottomTab}>
-        <View style={styles.inputContainer}>
+      <View style={{flex: 1}}>
+        {chats.length > 0 ? (
+          <FlatList
+            ref={scrollRef}
+            onContentSizeChange={() => scrollRef.current.scrollToEnd()}
+            showsVerticalScrollIndicator={false}
+            data={chats}
+            renderItem={({item}) => {
+              if (item.uid === uid) {
+                return item.imageUrl ? (
+                  <ImageCard
+                    imageUri={item.imageUrl}
+                    alignSelf="flex-end"
+                    visibleCross={false}
+                  />
+                ) : (
+                  <MessageSendCard message={item.message} time={item.time} />
+                );
+              } else {
+                return item.imageUrl ? (
+                  <ImageCard
+                    imageUri={item.imageUrl}
+                    alignSelf="flex-start"
+                    visibleCross={false}
+                    name={item.name}
+                  />
+                ) : (
+                  <MessageReceiveCard
+                    message={item.message}
+                    name={item.name}
+                    time={item.time}
+                  />
+                );
+              }
+            }}
+          />
+        ) : null}
+      </View>
+      {imageUri && (
+        <ImageCard imageUri={imageUri} onCancel={() => setImageUri(null)} />
+      )}
+      <View style={styles.inputContainer}>
+        {message.length === 0 && (
           <Icon
             iconSource={require('../assets/camera.png')}
             backgroundColor="transparent"
             iconSize={40}
+            onPress={() => selectImage()}
           />
-          <TextInput
-            placeholder="Type message"
-            placeholderTextColor={colors.dimWhite}
-            style={styles.textInput}
-            // onChange={() => setVisibleIcon(false)}
-          />
-          <View
-            style={{
-              position: 'absolute',
-              flexDirection: 'row',
-              right: 0,
-              alignSelf: 'center',
-            }}>
-            {visibleIcon ? (
-              <Icon
-                backgroundColor="transparent"
-                iconSource={require('../assets/happy.png')}
-                iconColor={colors.white}
-                iconSize={40}
-              />
-            ) : null}
+        )}
 
+        <TextInput
+          autoCapitalize="none"
+          autoCorrect={false}
+          multiline
+          placeholder="Type message"
+          placeholderTextColor={colors.dimWhite}
+          style={styles.textInput}
+          value={message}
+          onChangeText={text => setMessage(text)}
+        />
+        <View
+          style={{
+            position: 'absolute',
+            flexDirection: 'row',
+            right: 0,
+            alignSelf: 'center',
+          }}>
+          {message.length === 0 && (
             <Icon
               backgroundColor="transparent"
-              iconSource={require('../assets/send.png')}
-              iconColor={colors.white}
+              iconSource={require('../assets/happy.png')}
               iconSize={40}
+              onPress={() => {
+                showEmojiTab === false
+                  ? setShowEmojiTab(true)
+                  : setShowEmojiTab(false);
+              }}
             />
-          </View>
+          )}
+          <Icon
+            backgroundColor="transparent"
+            iconSource={require('../assets/send.png')}
+            iconSize={40}
+            onPress={() => {
+              imageUri ? storeImage() : sendMessage();
+            }}
+          />
         </View>
       </View>
+      {showEmojiTab && (
+        <EmojiSelector
+          onEmojiSelected={emoji => {
+            setMessage(emoji);
+            setShowEmojiTab(false);
+          }}
+          showSearchBar={false}
+          showSectionTitles={false}
+        />
+      )}
     </LinearGradient>
   );
 }
@@ -101,23 +266,18 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: colors.dimWhite,
   },
-  bottomTab: {
-    width: '110%',
-    height: 80,
-    alignSelf: 'center',
-    paddingHorizontal: 20,
-  },
   inputContainer: {
-    paddingVertical: 8,
-    width: '100%',
+    alignItems: 'center',
+    marginVertical: 5,
     borderRadius: 22,
     flexDirection: 'row',
     borderWidth: 0.2,
     borderColor: colors.dimWhite,
   },
   textInput: {
-    paddingRight: 60,
+    paddingRight: 50,
     paddingLeft: 10,
+    marginVertical: 10,
     fontSize: 18,
     fontWeight: '400',
     color: colors.white,

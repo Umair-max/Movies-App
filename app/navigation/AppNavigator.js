@@ -7,9 +7,12 @@ import BottomTab from '../components/BottomTab';
 import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ChatScreen from '../screens/ChatScreen';
+import ImageCard from '../components/ImageCard';
+import ImageScreen from '../screens/ImageScreen';
 
 function AppNavigator() {
   const Tab = createBottomTabNavigator();
+
   return (
     <Tab.Navigator
       tabBar={() => <BottomTab />}
@@ -19,6 +22,7 @@ function AppNavigator() {
       <Tab.Screen name="Inbox" component={InboxScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Chat" component={ChatScreen} />
+      <Tab.Screen name="Image" component={ImageScreen} />
     </Tab.Navigator>
   );
 }
