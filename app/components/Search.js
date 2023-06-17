@@ -3,11 +3,7 @@ import {View, TextInput, StyleSheet} from 'react-native';
 import colors from '../config/colors';
 import Icon from './Icon';
 
-function Search({
-  placeholder = 'placeholder',
-  backgroundColor = colors.blue,
-  fontSize = 18,
-}) {
+function Search({backgroundColor = colors.blue, fontSize = 18}) {
   return (
     <View style={[styles.inputContainer, {backgroundColor: backgroundColor}]}>
       <Icon
@@ -16,7 +12,7 @@ function Search({
         iconSize={30}
       />
       <TextInput
-        placeholder={placeholder}
+        placeholder="Search"
         placeholderTextColor={colors.white}
         style={{
           paddingRight: 60,
@@ -24,7 +20,8 @@ function Search({
           fontSize: fontSize,
           fontWeight: '400',
           color: colors.white,
-        }}></TextInput>
+        }}
+      />
     </View>
   );
 }

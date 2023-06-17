@@ -1,94 +1,101 @@
+import React, {useEffect, useState, useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
 import {
   View,
   StyleSheet,
   Text,
   SafeAreaView,
   FlatList,
-  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import database from '@react-native-firebase/database';
+
 import Icon from '../components/Icon';
 import SmallButton from '../components/SmallButton';
 import colors from '../config/colors';
-
-const data = [
-  {id: 1, key: 'Cartoon'},
-  {id: 2, key: 'Thriller'},
-  {id: 3, key: 'Comedy'},
-  {id: 4, key: 'Anime'},
-  {id: 5, key: 'Biography'},
-  {id: 6, key: 'Crime'},
-  {id: 7, key: 'Action'},
-  {id: 8, key: 'Fantastic'},
-  {id: 9, key: 'Detective'},
-  {id: 10, key: 'Drama'},
-  {id: 11, key: 'Melodramas'},
-  {id: 12, key: 'Military'},
-  {id: 13, key: 'Westerns'},
-  {id: 14, key: 'Adventure'},
-  {id: 15, key: 'Fantasy'},
-  {id: 16, key: 'Family'},
-  {id: 17, key: 'History'},
-  {id: 18, key: 'Horror'},
-];
+import Card from '../components/Card';
 
 function HomeScreen() {
+  const flatlistRef = useRef();
   const navigation = useNavigation();
+  const [iseLoaded, setIsLoaded] = useState(true);
+  const [genre, setGenre] = useState([]);
+
+  var isMounted = false;
+
+  useEffect(() => {
+    isMounted = true;
+    getData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const getData = () => {
+    database()
+      .ref('genres')
+      .once('value')
+      .then(snapshot => {
+        var doc = snapshot.val();
+        var temp = Object.values(doc);
+        if (temp.length > 0) {
+          if (isMounted) {
+            setGenre(temp);
+            setIsLoaded(false);
+          }
+        }
+      });
+  };
+
+  const scrollToIndex = index => {
+    flatlistRef.current.scrollToIndex({animated: true, index: index});
+  };
+
   return (
     <LinearGradient colors={colors.background}>
       <SafeAreaView style={{height: '100%', width: '100%'}}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        {iseLoaded ? (
           <View
-            style={{
-              flexDirection: 'row',
-              paddingHorizontal: 20,
-              justifyContent: 'space-between',
-            }}>
-            <View style={styles.hidden}></View>
-            <Text style={styles.primaryText}>Home</Text>
-            <Icon
-              iconColor={colors.white}
-              iconSource={require('../assets/user.png')}
-              onPress={() => navigation.navigate('Profile')}
-            />
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator />
           </View>
-          <FlatList
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            data={data}
-            renderItem={({item}) => <SmallButton title={item.key} />}
-          />
-          <ScrollView horizontal={true} scrollEnabled={false}>
+        ) : (
+          <>
+            <View
+              style={{
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                justifyContent: 'space-between',
+              }}>
+              <View style={styles.hidden}></View>
+              <Text style={styles.primaryText}>Home</Text>
+              <Icon
+                iconColor={colors.white}
+                iconSource={require('../assets/user.png')}
+                onPress={() => navigation.navigate('Profile')}
+              />
+            </View>
             <FlatList
-              scrollEnabled={false}
-              showsVerticalScrollIndicator={false}
-              data={data}
-              renderItem={({item}) => (
-                <>
-                  <View style={styles.titleContainer}>
-                    <Text key={item.id} style={styles.primaryText}>
-                      {item.key}
-                    </Text>
-                    {/* <View style={{flex: 1}}></View> */}
-                    <SmallButton
-                      height={20}
-                      fontSize={12}
-                      fontWeight={'500'}
-                      paddingHorizontal={10}
-                      title="See all"
-                    />
-                  </View>
-                  <View style={styles.imageContainer}>
-                    <View style={styles.movieImage}></View>
-                    <View style={styles.movieImage}></View>
-                  </View>
-                </>
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={genre}
+              renderItem={({item, index}) => (
+                <SmallButton
+                  title={item.description}
+                  onPress={() => scrollToIndex(index)}
+                />
               )}
             />
-          </ScrollView>
-        </ScrollView>
+
+            <FlatList
+              ref={flatlistRef}
+              showsVerticalScrollIndicator={false}
+              data={genre}
+              renderItem={({item}) => <Card data={item} />}
+            />
+          </>
+        )}
       </SafeAreaView>
     </LinearGradient>
   );
@@ -100,22 +107,10 @@ const styles = StyleSheet.create({
     color: colors.white,
     marginBottom: 10,
   },
-  movieImage: {
-    backgroundColor: colors.white,
-    height: 130,
-    width: 130,
-    borderRadius: 10,
-    marginBottom: 25,
-    marginRight: 10,
-  },
   titleContainer: {
     justifyContent: 'space-between',
     flexDirection: 'row',
-    marginLeft: 15,
-  },
-  imageContainer: {
-    marginLeft: 15,
-    flexDirection: 'row',
+    marginHorizontal: 15,
   },
   hidden: {
     width: 40,

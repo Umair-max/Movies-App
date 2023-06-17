@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import firestore from '@react-native-firebase/firestore';
@@ -17,12 +18,12 @@ import EmojiSelector from 'react-native-emoji-selector';
 import {launchImageLibrary} from 'react-native-image-picker';
 
 import Icon from '../components/Icon';
-import MessageReceiveCard from '../components/MessageReceiveCard';
 import MessageSendCard from '../components/MessageSendCard';
 import colors from '../config/colors';
 import moment from 'moment';
 import ImageCard from '../components/ImageCard';
 import ChatCard from '../components/ChatCard';
+import MessageReceiveCard from '../components/MessageReceiveCard';
 
 function ChatScreen() {
   const scrollRef = useRef(null);
@@ -33,6 +34,7 @@ function ChatScreen() {
   const [chats, setChats] = useState([]);
   const [name, setName] = useState('');
   const [imageUri, setImageUri] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const [showEmojiTab, setShowEmojiTab] = useState(false);
 
@@ -68,15 +70,17 @@ function ChatScreen() {
         .collection('Message')
         .doc()
         .set({
-          imageUrl: url,
+          imageUrl: url ? url : null,
           message: message,
           time: moment().format('h:mm a'),
           uid: uid,
           name: name,
           date: Date.now(),
         });
+      setIsLoaded(false);
     } else {
       Alert.alert('Alert', 'Message should not be empty');
+      setIsLoaded(false);
     }
     setMessage('');
     setImageUri(null);
@@ -100,6 +104,7 @@ function ChatScreen() {
   };
 
   const storeImage = () => {
+    setIsLoaded(true);
     const postId = firestore().collection('Users').doc().id;
     var pathToBe = 'Post Image' + postId;
     storage()

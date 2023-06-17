@@ -13,7 +13,7 @@ function ChatCard({lastMessage}) {
         <View style={{width: '70%'}}>
           <Text style={styles.userName}>Global Chat</Text>
           <Text style={styles.lastMessage} numberOfLines={1}>
-            {lastMessage}
+            {lastMessage ? lastMessage : 'Image'}
           </Text>
         </View>
         <Text style={styles.time}>11:18 PM</Text>

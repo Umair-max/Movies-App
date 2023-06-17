@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, StyleSheet, TouchableWithoutFeedback, Text} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useNavigation} from '@react-navigation/native';
 import Icon from './Icon';
@@ -17,7 +23,7 @@ function ImageCard({
     <TouchableWithoutFeedback
       onPress={() => navigation.navigate('Image', {imageUri: imageUri})}>
       <View style={styles.container}>
-        <Text style={styles.name}>{name}</Text>
+        {name && <Text style={styles.name}>{name}</Text>}
         <FastImage
           style={[styles.image, {alignSelf: alignSelf}]}
           source={{uri: imageUri}}
@@ -55,6 +61,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 14,
     color: colors.dimWhite,
+  },
+  indicator: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 export default ImageCard;

@@ -7,8 +7,9 @@ import BottomTab from '../components/BottomTab';
 import SearchScreen from '../screens/SearchScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ChatScreen from '../screens/ChatScreen';
-import ImageCard from '../components/ImageCard';
 import ImageScreen from '../screens/ImageScreen';
+import MovieDetailsScreen from '../screens/MovieDetailsScreen';
+import MoviesListingScreen from '../screens/MoviesListingScreen';
 
 function AppNavigator() {
   const Tab = createBottomTabNavigator();
@@ -23,6 +24,8 @@ function AppNavigator() {
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Chat" component={ChatScreen} />
       <Tab.Screen name="Image" component={ImageScreen} />
+      <Tab.Screen name="MovieDetails" component={MovieDetailsScreen} />
+      <Tab.Screen name="MoviesListing" component={MoviesListingScreen} />
     </Tab.Navigator>
   );
 }
