@@ -7,6 +7,7 @@ import ChatCard from '../components/ChatCard';
 import Search from '../components/Search';
 
 import colors from '../config/colors';
+import SearchBar from '../components/SearchBar';
 
 function InboxScreen() {
   const [lastMessage, setLastMessage] = useState('');
@@ -32,7 +33,7 @@ function InboxScreen() {
       <SafeAreaView>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.primaryText}>Inbox</Text>
-          <Search placeholder="Search" />
+          <Search />
           <ChatCard lastMessage={lastMessage} />
         </ScrollView>
       </SafeAreaView>
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: '600',
     color: colors.white,
-    paddingBottom: 15,
+    paddingBottom: 10,
     alignSelf: 'center',
   },
 });

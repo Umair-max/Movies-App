@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet, Dimensions, SafeAreaView, View, Image} from 'react-native';
+import {Dimensions, SafeAreaView, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from '../components/Icon';

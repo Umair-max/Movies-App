@@ -1,73 +1,92 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   SafeAreaView,
   FlatList,
-  Dimensions,
-  Image,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import database from '@react-native-firebase/database';
+
 import Button from '../components/Button';
-import Icon from '../components/Icon';
 import SmallButton from '../components/SmallButton';
 import colors from '../config/colors';
+import {useNavigation} from '@react-navigation/native';
 
-const data = [
-  {key: 'Cartoon'},
-  {key: 'Thriller'},
-  {key: 'Comedy'},
-  {key: 'Adventure'},
-  {key: 'Biography'},
-  {key: 'Crime'},
-  {key: 'Action'},
-  {key: 'Fantastic'},
-  {key: 'Detective'},
-  {key: 'Drama'},
-  {key: 'Melodramas'},
-  {key: 'Military'},
-  {key: 'Westerns'},
-  {key: 'Anime'},
-  {key: 'Fantasy'},
-  {key: 'Family'},
-  {key: 'History'},
-  {key: 'Horror'},
-];
-
-const formatData = (data, numColumns) => {
-  Math.floor(data.length / numColumns);
-  return data;
-};
-
-const numColumns = 3;
 function GenreScreen() {
+  const navigattion = useNavigation();
+  const [change, setChange] = useState(false);
+  const [iseLoaded, setIsLoaded] = useState(true);
+  const [genre, setGenre] = useState([]);
+
+  var isMounted = false;
+
+  useEffect(() => {
+    isMounted = true;
+    getData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const getData = () => {
+    database()
+      .ref('genres')
+      .once('value')
+      .then(snapshot => {
+        var doc = snapshot.val();
+        var temp = Object.values(doc);
+        if (temp.length > 0) {
+          if (isMounted) {
+            setGenre(temp);
+            setIsLoaded(false);
+          }
+        }
+      });
+  };
+
+  const changeColor = () => {};
+
   return (
     <LinearGradient colors={colors.background} style={styles.linearGradient}>
-      <SafeAreaView style={{alignItems: 'center'}}>
-        <View style={{flexDirection: 'row', paddingBottom: 40}}></View>
-        <Text style={styles.text}>Choose your favourite genres</Text>
-
-        <FlatList
-          data={formatData(data, numColumns)}
-          numColumns={numColumns}
-          renderItem={({item}) => {
-            return (
-              <SmallButton
-                title={item.key}
-                paddingHorizontal={15}
-                borderRadius={20}
-              />
-            );
-          }}
-        />
-
-        <View style={styles.bottomContainer}>
-          <View style={{marginVertical: 25}}>
-            <SmallButton title="Skip" fontWeight={'700'} />
+      <SafeAreaView>
+        {iseLoaded ? (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator />
           </View>
-          <Button title="Next" />
-        </View>
+        ) : (
+          <View style={{alignItems: 'center', paddingVertical: 40}}>
+            <Text style={styles.text}>Choose your favourite genres</Text>
+            <FlatList
+              data={genre}
+              numColumns={3}
+              renderItem={({item, index}) => {
+                console.log(index, item.description);
+                return (
+                  <SmallButton
+                    title={item.description}
+                    paddingHorizontal={15}
+                    borderRadius={20}
+                    buttonColor={colors.darkBlue}
+                    onPress={() => changeColor()}
+                  />
+                );
+              }}
+            />
+
+            <View style={styles.bottomContainer}>
+              <SmallButton
+                title="Skip"
+                fontWeight={'700'}
+                onPress={() => navigattion.navigate('Home')}
+              />
+              <Button title="Next" />
+            </View>
+          </View>
+        )}
       </SafeAreaView>
     </LinearGradient>
   );
@@ -88,10 +107,7 @@ const styles = StyleSheet.create({
   bottomContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // alignItems: 'center',
+    alignItems: 'center',
   },
-  // itemInvisible: {
-  //   backgroundColor: 'transparent',
-  // },
 });
 export default GenreScreen;

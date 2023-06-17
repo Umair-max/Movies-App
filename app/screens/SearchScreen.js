@@ -1,137 +1,80 @@
-import React from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   StyleSheet,
   Text,
   SafeAreaView,
   FlatList,
-  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Search from '../components/Search';
-import SmallButton from '../components/SmallButton';
-import colors from '../config/colors';
+import database from '@react-native-firebase/database';
 
-const data = [
-  {id: 1, key: 'Cartoon'},
-  {id: 2, key: 'Thriller'},
-  {id: 3, key: 'Comedy'},
-  {id: 4, key: 'Anime'},
-  {id: 5, key: 'Biography'},
-  {id: 6, key: 'Crime'},
-  {id: 7, key: 'Action'},
-  {id: 8, key: 'Fantastic'},
-  {id: 9, key: 'Detective'},
-  {id: 10, key: 'Drama'},
-  {id: 11, key: 'Melodramas'},
-  {id: 12, key: 'Military'},
-  {id: 13, key: 'Westerns'},
-  {id: 14, key: 'Adventure'},
-  {id: 15, key: 'Fantasy'},
-  {id: 16, key: 'Family'},
-  {id: 17, key: 'History'},
-  {id: 18, key: 'Horror'},
-];
+import SearchBar from '../components/SearchBar';
+import colors from '../config/colors';
+import Card from '../components/Card';
 
 function SearchScreen() {
-  return (
-    <LinearGradient colors={colors.background} style={styles.linearGradient}>
-      <SafeAreaView>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={styles.primaryText}>Search</Text>
-          <Search placeholder="Search" />
+  const flatlistRef = useRef();
+  const [genre, setGenre] = useState([]);
+  const [iseLoaded, setIsLoaded] = useState(true);
 
-          <View style={{alignItems: 'center', marginTop: 10, marginBottom: 15}}>
-            <View style={{flexDirection: 'row'}}>
-              <SmallButton
-                title={data[0].key}
-                paddingHorizontal={12}
-                height={35}
-                fontSize={14}
-                fontWeight={'500'}
-              />
-              <SmallButton
-                title={data[1].key}
-                paddingHorizontal={12}
-                height={35}
-                fontSize={14}
-                fontWeight={'500'}
-              />
-              <SmallButton
-                title={data[2].key}
-                paddingHorizontal={12}
-                height={35}
-                fontSize={14}
-                fontWeight={'500'}
-              />
-              <SmallButton
-                title={data[3].key}
-                paddingHorizontal={12}
-                height={35}
-                fontSize={14}
-                fontWeight={'500'}
-              />
-            </View>
-            <View style={{flexDirection: 'row'}}>
-              <SmallButton
-                title={data[4].key}
-                paddingHorizontal={12}
-                height={35}
-                fontSize={14}
-                fontWeight={'500'}
-              />
-              <SmallButton
-                title={data[5].key}
-                paddingHorizontal={12}
-                height={35}
-                fontSize={14}
-                fontWeight={'500'}
-              />
-              <SmallButton
-                title={data[6].key}
-                paddingHorizontal={12}
-                height={35}
-                fontSize={14}
-                fontWeight={'500'}
-              />
-            </View>
+  var isMounted = false;
+
+  useEffect(() => {
+    isMounted = true;
+    getData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const getData = () => {
+    setIsLoaded(true);
+
+    database()
+      .ref('genres')
+      .once('value')
+      .then(snapshot => {
+        var doc = snapshot.val();
+        var temp = Object.values(doc);
+        if (temp.length > 0) {
+          if (isMounted) {
+            setGenre(temp);
+            setIsLoaded(false);
+          }
+        }
+      });
+  };
+
+  return (
+    <LinearGradient colors={colors.background}>
+      <SafeAreaView style={{width: '100%', height: '100%'}}>
+        {iseLoaded ? (
+          <View
+            style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+            <ActivityIndicator />
           </View>
-          <ScrollView horizontal={true} scrollEnabled={false}>
+        ) : (
+          <>
+            <Text style={styles.primaryText}>Search</Text>
+            <View style={{marginHorizontal: 15, marginBottom: 4}}>
+              <SearchBar />
+            </View>
             <FlatList
-              scrollEnabled={false}
+              ref={flatlistRef}
               showsVerticalScrollIndicator={false}
-              data={data}
-              renderItem={({item}) => (
-                <>
-                  <View style={styles.titleContainer}>
-                    <Text key={item.id} style={styles.primaryText}>
-                      {item.key}
-                    </Text>
-                    <SmallButton
-                      height={20}
-                      fontSize={12}
-                      fontWeight={'500'}
-                      paddingHorizontal={10}
-                      title="See all"
-                    />
-                  </View>
-                  <View style={styles.imageContainer}>
-                    <View style={styles.movieImage}></View>
-                    <View style={styles.movieImage}></View>
-                  </View>
-                </>
-              )}
+              data={genre}
+              renderItem={({item}) => <Card data={item} />}
             />
-          </ScrollView>
-        </ScrollView>
+          </>
+        )}
       </SafeAreaView>
     </LinearGradient>
   );
 }
 const styles = StyleSheet.create({
-  linearGradient: {
-    paddingHorizontal: 15,
-  },
   primaryText: {
     fontSize: 26,
     fontWeight: '600',
@@ -139,20 +82,10 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     alignSelf: 'center',
   },
-  movieImage: {
-    backgroundColor: colors.white,
-    height: 130,
-    width: 130,
-    borderRadius: 10,
-    marginBottom: 25,
-    marginRight: 10,
-  },
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  imageContainer: {
-    flexDirection: 'row',
+    marginHorizontal: 15,
   },
 });
 export default SearchScreen;

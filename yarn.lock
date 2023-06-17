@@ -1746,7 +1746,7 @@
 
 "@react-native-firebase/app@^18.0.0":
   version "18.0.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-18.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-18.0.0.tgz#10036e5a480b1143bd88a50643f14ba0e9c62f82"
   integrity sha512-jvxitPNkcxE6IyGHiOGaURA42ZHBesTeSLbOfqQL6ZtTkQ0sPkFk6VPM2OR5s5S2NfOCfd9dddOhFLIX5VE3ig==
   dependencies:
     opencollective-postinstall "^2.0.1"
@@ -1761,7 +1761,7 @@
 
 "@react-native-firebase/database@^18.0.0":
   version "18.0.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/database/-/database-18.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/database/-/database-18.0.0.tgz#215e48890e74fb233d49b681b6748662827ea13d"
   integrity sha512-6FguiE6rs/28qhFkUdZU/yLYqJAt9wSLGT+9RQ8cCGPVj9rfjGI5FLh9rGUOOVWmsSWbBL3WsThmMQzk6Y946A==
 
 "@react-native-firebase/firestore@^18.0.0":

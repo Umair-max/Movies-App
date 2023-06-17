@@ -4,19 +4,24 @@ import colors from '../config/colors';
 
 function SmallButton({
   title = 'title',
-  color = colors.darkBlue,
   paddingHorizontal = 30,
   borderRadius = 12,
-  fontWeight,
-  fontSize = 18,
-  height = 40,
+  fontWeight = '500',
+  fontSize = 16,
+  height = 35,
+  onPress,
+  buttonColor = colors.darkBlue,
 }) {
   return (
-    <TouchableWithoutFeedback>
+    <TouchableWithoutFeedback onPress={onPress}>
       <View
         style={[
           styles.buttonContainer,
-          {backgroundColor: color, borderRadius: borderRadius, height: height},
+          {
+            backgroundColor: buttonColor,
+            borderRadius: borderRadius,
+            height: height,
+          },
         ]}>
         <Text
           style={{

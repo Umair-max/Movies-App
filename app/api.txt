@@ -1,0 +1,171 @@
+ // .entries(doc).map(([index, value]) => ({
+  //   index,
+  //   value,
+  // }));
+
+  // const Key = '74925840a1msh6d67748c229199ap1fd965jsn0a6e8711ecf1';
+  // const Host = 'imdb8.p.rapidapi.com';
+  // const getGenre = async () => {
+  //   const url = 'https://imdb8.p.rapidapi.com/title/list-popular-genres';
+  //   const options = {
+  //     method: 'GET',
+  //     headers: {
+  //       'X-RapidAPI-Key': Key,
+  //       'X-RapidAPI-Host': Host,
+  //     },
+  //   };
+
+  //   try {
+  //     const response = await fetch(url, options);
+  //     const result = await response.json();
+  //     const genre = result.genres;
+  //     var data = [];
+  //     genre.forEach(element => {
+  //       data.push({description: element.description});
+  //     });
+  //     database().ref('genres').set(data); // store data in firebase
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // const getMoviesId = async () => {
+  //   const url = 'https://imdb8.p.rapidapi.com/title/get-most-popular-movies';
+  //   const options = {
+  //     method: 'GET',
+  //     headers: {
+  //       'X-RapidAPI-Key': Key,
+  //       'X-RapidAPI-Host': Host,
+  //     },
+  //   };
+  //   try {
+  //     const response = await fetch(url, options);
+  //     const result = await response.json();
+  //     const id = result;
+  //     var data = [];
+  //     id.forEach(element => {
+  //       const eachId = element.split('/')[2];
+  //       data.push(eachId);
+  //     });
+  //     // database().ref('moviesId').set(data); // store data in firebase
+  //     setMoviesId(data);
+  //     getMovieImageAndGenre(moviesId);
+  //     console.log('moviesId ===> ', data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // const getMovieImageAndGenre = async moviesId => {
+  //   const imdbIds = moviesId;
+  //   const movies = [];
+
+  //   for (const imdbId of imdbIds) {
+  //     const url = `https://imdb8.p.rapidapi.com/title/get-overview-details?tconst=${imdbId}`;
+  //     const url_ = `https://imdb8.p.rapidapi.com/title/get-details?tconst=${imdbId}`;
+  //     const options = {
+  //       method: 'GET',
+  //       headers: {
+  //         'X-RapidAPI-Key': Key,
+  //         'X-RapidAPI-Host': Host,
+  //       },
+  //     };
+
+  //     try {
+  //       const response_ = await fetch(url_, options);
+  //       const result_ = await response_.json();
+  //       const title = result_.title;
+
+  //       const response = await fetch(url, options);
+  //       const result = await response.json();
+  //       const rating = result.ratings.rating;
+  //       const releaseData = result.releaseDate;
+
+  //       const imageUrl = result.title.image.url;
+  //       const movieGenre = result.genres;
+
+  //       const movie = {
+  //         imdbId: imdbId,
+  //         imageUrl: imageUrl,
+  //         movieGenre: movieGenre,
+  //         rating: rating,
+  //         releaseData: releaseData,
+  //         title: title,
+  //       };
+  //       movies.push(movie);
+  //     } catch (error) {
+  //       console.error(`Error fetching data for IMDb ID ${imdbId}:`, error);
+  //     }
+  //   }
+  //   console.log('moviesData ==> ', movies);
+  //   database().ref('movies').set(movies);
+  //   setMoviesData(movies);
+  // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+              {/* <FlatList
+              scrollEnabled={false}
+              showsVerticalScrollIndicator={false}
+              data={genre}
+              renderItem={({item}) => (
+                <>
+                  <View style={styles.titleContainer}>
+                    <Text style={styles.primaryText}>{item.description}</Text>
+                    <SmallButton
+                      height={20}
+                      fontSize={12}
+                      fontWeight={'500'}
+                      paddingHorizontal={10}
+                      title="See all"
+                    />
+                  </View>
+                  <FlatList
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    data={moviesData}
+                    renderItem={({item: movie, index}) => {
+
+                      // return movie.movieGenre.length > 0;
+                      // ? movie.movieGenre.includes('Biography')
+                      // ?  &&  item.description === 'Biography'
+                      // console.log(
+                      // movie.movieGenre,
+                      // '  > > ',
+                      // index,
+                      // '  > > ',
+                      // item.description,
+                      // )
+                      // : null
+                      //  :  movie.movieGenre.includes(item.description) ? (
+                      //   <MovieCard item={movie} />
+                      // ) : // console.log(
+                      // //     movie.movieGenre,
+                      // //     '  > > ',
+                      // //     index,
+                      // //     '  > > ',
+                      // //     item.description,
+                      // //   )
+                      // null
+                      // null;
+
+                      // if (movie.movieGenre.includes('')) {
+
+                      if (movie.movieGenre.includes(item.description)) {
+                        return <MovieCard item={movie} index={index} />;
+                      }
+                      return null;
+                    }}
+                  />
+                </>
+              )}
+            /> */}
