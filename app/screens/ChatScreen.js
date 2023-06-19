@@ -9,6 +9,7 @@ import {
   Alert,
   FlatList,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import firestore from '@react-native-firebase/firestore';
@@ -22,7 +23,6 @@ import MessageSendCard from '../components/MessageSendCard';
 import colors from '../config/colors';
 import moment from 'moment';
 import ImageCard from '../components/ImageCard';
-import ChatCard from '../components/ChatCard';
 import MessageReceiveCard from '../components/MessageReceiveCard';
 
 function ChatScreen() {
@@ -180,58 +180,61 @@ function ChatScreen() {
           />
         ) : null}
       </View>
-      {imageUri && (
-        <ImageCard imageUri={imageUri} onCancel={() => setImageUri(null)} />
-      )}
-      <View style={styles.inputContainer}>
-        {message.length === 0 && (
-          <Icon
-            iconSource={require('../assets/camera.png')}
-            backgroundColor="transparent"
-            iconSize={40}
-            onPress={() => selectImage()}
-          />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'position' : 'height'}>
+        {imageUri && (
+          <ImageCard imageUri={imageUri} onCancel={() => setImageUri(null)} />
         )}
-
-        <TextInput
-          autoCapitalize="none"
-          autoCorrect={false}
-          multiline
-          placeholder="Type message"
-          placeholderTextColor={colors.dimWhite}
-          style={styles.textInput}
-          value={message}
-          onChangeText={text => setMessage(text)}
-        />
-        <View
-          style={{
-            position: 'absolute',
-            flexDirection: 'row',
-            right: 0,
-            alignSelf: 'center',
-          }}>
+        <View style={styles.inputContainer}>
           {message.length === 0 && (
             <Icon
+              iconSource={require('../assets/camera.png')}
               backgroundColor="transparent"
-              iconSource={require('../assets/happy.png')}
               iconSize={40}
-              onPress={() => {
-                showEmojiTab === false
-                  ? setShowEmojiTab(true)
-                  : setShowEmojiTab(false);
-              }}
+              onPress={() => selectImage()}
             />
           )}
-          <Icon
-            backgroundColor="transparent"
-            iconSource={require('../assets/send.png')}
-            iconSize={40}
-            onPress={() => {
-              imageUri ? storeImage() : sendMessage();
-            }}
+
+          <TextInput
+            autoCapitalize="none"
+            autoCorrect={false}
+            multiline
+            placeholder="Type message"
+            placeholderTextColor={colors.dimWhite}
+            style={styles.textInput}
+            value={message}
+            onChangeText={text => setMessage(text)}
           />
+          <View
+            style={{
+              position: 'absolute',
+              flexDirection: 'row',
+              right: 0,
+              alignSelf: 'center',
+            }}>
+            {message.length === 0 && (
+              <Icon
+                backgroundColor="transparent"
+                iconSource={require('../assets/happy.png')}
+                iconSize={40}
+                onPress={() => {
+                  showEmojiTab === false
+                    ? setShowEmojiTab(true)
+                    : setShowEmojiTab(false);
+                }}
+              />
+            )}
+            <Icon
+              backgroundColor="transparent"
+              iconSource={require('../assets/send.png')}
+              iconSize={40}
+              onPress={() => {
+                imageUri ? storeImage() : sendMessage();
+              }}
+            />
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
       {showEmojiTab && (
         <EmojiSelector
           onEmojiSelected={emoji => {

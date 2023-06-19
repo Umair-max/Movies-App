@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 import Button from '../components/Button';
 import SmallButton from '../components/SmallButton';
@@ -16,10 +18,10 @@ import colors from '../config/colors';
 import {useNavigation} from '@react-navigation/native';
 
 function GenreScreen() {
-  const navigattion = useNavigation();
-  const [change, setChange] = useState(false);
+  const navigation = useNavigation();
   const [iseLoaded, setIsLoaded] = useState(true);
   const [genre, setGenre] = useState([]);
+  const [selectedButtons, setSelectedButtons] = useState([]);
 
   var isMounted = false;
 
@@ -46,8 +48,24 @@ function GenreScreen() {
         }
       });
   };
+  const changeColors = item => {
+    if (selectedButtons.includes(item.description)) {
+      setSelectedButtons(prevState =>
+        prevState.filter(button => button !== item.description),
+      );
+    } else {
+      if (selectedButtons.length < 3) {
+        setSelectedButtons(prevState => [...prevState, item.description]);
+      }
+    }
+  };
 
-  const changeColor = () => {};
+  const sendSelectedGenres = uid => {
+    const UserUid = auth().currentUser.uid;
+    firestore().collection('Users').doc(UserUid).update({
+      genre: selectedButtons,
+    });
+  };
 
   return (
     <LinearGradient colors={colors.background} style={styles.linearGradient}>
@@ -63,15 +81,18 @@ function GenreScreen() {
             <FlatList
               data={genre}
               numColumns={3}
-              renderItem={({item, index}) => {
-                console.log(index, item.description);
+              renderItem={({item}) => {
                 return (
                   <SmallButton
                     title={item.description}
                     paddingHorizontal={15}
                     borderRadius={20}
-                    buttonColor={colors.darkBlue}
-                    onPress={() => changeColor()}
+                    buttonColor={
+                      selectedButtons.includes(item.description)
+                        ? colors.blue
+                        : colors.darkBlue
+                    }
+                    onPress={() => changeColors(item)}
                   />
                 );
               }}
@@ -81,9 +102,15 @@ function GenreScreen() {
               <SmallButton
                 title="Skip"
                 fontWeight={'700'}
-                onPress={() => navigattion.navigate('Home')}
+                onPress={() => navigation.navigate('Home')}
               />
-              <Button title="Next" />
+              <Button
+                title="Next"
+                onPress={() => {
+                  sendSelectedGenres();
+                  navigation.navigate('Home');
+                }}
+              />
             </View>
           </View>
         )}

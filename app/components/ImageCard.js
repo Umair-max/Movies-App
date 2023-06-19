@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Text,
-  ActivityIndicator,
-} from 'react-native';
+import {View, StyleSheet, TouchableWithoutFeedback, Text} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {useNavigation} from '@react-navigation/native';
 import Icon from './Icon';

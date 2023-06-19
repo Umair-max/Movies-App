@@ -5,7 +5,6 @@ import auth from '@react-native-firebase/auth';
 import AuthNavigator from './app/navigation/AuthNavigator';
 import AppNavigator from './app/navigation/AppNavigator';
 import AuthsContext from './app/auths/AuthsContext';
-import GenreScreen from './app/screens/GenreScreen';
 
 export default function App(props) {
   const [user, setUser] = useState(null);
