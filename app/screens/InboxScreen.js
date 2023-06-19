@@ -7,7 +7,6 @@ import ChatCard from '../components/ChatCard';
 import Search from '../components/Search';
 
 import colors from '../config/colors';
-import SearchBar from '../components/SearchBar';
 
 function InboxScreen() {
   const [lastMessage, setLastMessage] = useState('');

@@ -7,6 +7,7 @@ import {
   ImageBackground,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
@@ -62,39 +63,43 @@ function SignupScreen() {
           </View>
         ) : (
           <SafeAreaView>
-            <View
-              style={{
-                paddingTop: 200,
-              }}></View>
-            <Text style={styles.primaryText}>Signup</Text>
-            <InputText
-              placeholder={'Name'}
-              value={name}
-              onChangeText={text => setName(text)}
-            />
-            <InputText
-              placeholder={'Email'}
-              value={email}
-              onChangeText={text => setEmail(text)}
-            />
-            <InputText
-              placeholder={'Password'}
-              value={password}
-              onChangeText={text => setPassword(text)}
-            />
-            <View style={{paddingHorizontal: 30, alignItems: 'center'}}>
-              <Button
-                title="Signup"
-                color={colors.transparent}
-                onPress={() => handleSignup()}
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+              keyboardVerticalOffset={Platform.OS === 'ios' ? -120 : 120}>
+              <View
+                style={{
+                  paddingTop: 200,
+                }}></View>
+              <Text style={styles.primaryText}>Signup</Text>
+              <InputText
+                placeholder={'Name'}
+                value={name}
+                onChangeText={text => setName(text)}
               />
-              <TouchableWithoutFeedback
-                onPress={() => navigation.navigate('Login')}>
-                <View style={{paddingTop: 90}}>
-                  <Text style={styles.primaryText}>Login?</Text>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
+              <InputText
+                placeholder={'Email'}
+                value={email}
+                onChangeText={text => setEmail(text)}
+              />
+              <InputText
+                placeholder={'Password'}
+                value={password}
+                onChangeText={text => setPassword(text)}
+              />
+              <View style={{paddingHorizontal: 30, alignItems: 'center'}}>
+                <Button
+                  title="Signup"
+                  color={colors.transparent}
+                  onPress={() => handleSignup()}
+                />
+                <TouchableWithoutFeedback
+                  onPress={() => navigation.navigate('Login')}>
+                  <View style={{paddingTop: 90}}>
+                    <Text style={styles.primaryText}>Login?</Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+            </KeyboardAvoidingView>
           </SafeAreaView>
         )}
       </ImageBackground>

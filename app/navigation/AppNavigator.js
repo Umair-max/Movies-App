@@ -10,6 +10,7 @@ import ChatScreen from '../screens/ChatScreen';
 import ImageScreen from '../screens/ImageScreen';
 import MovieDetailsScreen from '../screens/MovieDetailsScreen';
 import MoviesListingScreen from '../screens/MoviesListingScreen';
+import GenreScreen from '../screens/GenreScreen';
 
 function AppNavigator() {
   const Tab = createBottomTabNavigator();
@@ -21,6 +22,7 @@ function AppNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Inbox" component={InboxScreen} />
+      <Tab.Screen name="Genre" component={GenreScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Chat" component={ChatScreen} />
       <Tab.Screen name="Image" component={ImageScreen} />
